@@ -44,6 +44,7 @@ var (
 	ErrInvalidSigningPubKey = errors.New("invalid signing public key")
 	ErrTooLowPoW            = errors.New("message rejected, PoW too low")
 	ErrNoTopics             = errors.New("missing topic(s)")
+	ErrInvalidHex           = errors.New("invalid hex")
 )
 
 // PublicWakuAPI provides the waku RPC service that can be
@@ -266,9 +267,8 @@ func (api *PublicWakuAPI) Post(ctx context.Context, req NewMessage) (hexutil.Byt
 	if pubKeyGiven {
 		pubkey, err := hex.DecodeString(string(req.PublicKey))
 		if err != nil {
-			return nil, errors.New("fuck")
+			return nil, ErrInvalidHex
 		}
-
 
 		if params.Dst, err = crypto.UnmarshalPubkey(pubkey); err != nil {
 			return nil, ErrInvalidPublicKey
