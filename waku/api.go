@@ -21,6 +21,7 @@ package waku
 import (
 	"context"
 	"crypto/ecdsa"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"sync"
@@ -263,7 +264,13 @@ func (api *PublicWakuAPI) Post(ctx context.Context, req NewMessage) (hexutil.Byt
 
 	// Set asymmetric key that is used to encrypt the message
 	if pubKeyGiven {
-		if params.Dst, err = crypto.UnmarshalPubkey(req.PublicKey); err != nil {
+		pubkey, err := hex.DecodeString(string(req.PublicKey))
+		if err != nil {
+			return nil, errors.New("fuck")
+		}
+
+
+		if params.Dst, err = crypto.UnmarshalPubkey(pubkey); err != nil {
 			return nil, ErrInvalidPublicKey
 		}
 	}
